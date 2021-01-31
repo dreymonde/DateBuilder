@@ -204,6 +204,26 @@ NextMonth()
     .dateComponents() // year: 2021, month: 2, day: 1
 ```
 
+### Using `Every` functions
+
+You can use `EveryDay`, `EveryWeek`, `EveryMonth` and `EveryYear` functions in the same way as you would use something like `Today()` or `NextYear()`. The only difference is that at the end you will get an array of dates instead of a single instance:
+
+```swift
+let dates = EveryMonth(forMonths: 12, starting: .thisMonth)
+    .firstDay.addingDays(9)
+    .at(hour: 20, minute: 00)
+    .dates() // [Date]
+    
+// or
+
+let dates = EveryMonth(forMonths: 12, starting: .thisMonth)
+    .lastDay.addingDays(-5)
+    .at(hour: 20, minute: 00)
+    .dateComponents() // [DateComponents]
+```
+
+In case you use `.at(.randomTime( ... ))` function with `Every` functions, the exact resolved time will be different each day.
+
 ### Customizing the Calendar / Locale / Timezone
 
 By default, **DateBuilder** uses `Calendar.current` for all calculations. If you need to customize it, you can either change it globally:
