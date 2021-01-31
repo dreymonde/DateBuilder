@@ -19,11 +19,9 @@ public enum DateBuilder {
         return returnValue
     }
     
-    public static func withTimeZone<T>(_ timeZone: TimeZone?, _ perform: () -> T) -> T {
+    public static func withTimeZone<T>(_ timeZone: TimeZone, _ perform: () -> T) -> T {
         var current = calendar
-        if let timeZone = timeZone {
-            calendar.timeZone = timeZone
-        }
+        current.timeZone = timeZone
         return withCalendar(current, perform)
     }
     

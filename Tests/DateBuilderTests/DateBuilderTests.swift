@@ -11,6 +11,56 @@ final class DateBuilderTests: XCTestCase {
         XCTAssertEqual("Hello, World!", "Hello, World!")
     }
     
+    func testWithCalendar() {
+        var current = Calendar.current
+        let startOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
+        print(startOfNextWeek)
+        current.firstWeekday = 4
+        DateBuilder.withCalendar(current) {
+            let _startOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
+            print(_startOfNextWeek)
+            XCTAssertNotEqual(startOfNextWeek, _startOfNextWeek)
+        }
+        let againStartOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
+        print(againStartOfNextWeek)
+        XCTAssertEqual(startOfNextWeek, againStartOfNextWeek)
+    }
+    
+    func testWithTimeZone() {
+        var current = Calendar.current
+        current.timeZone = TimeZone(identifier: "America/Los_Angeles")!
+        DateBuilder.calendar = current
+        let tomorrowMorning = Tomorrow().at(hour: 9, minute: 00).date()
+        print(tomorrowMorning)
+        DateBuilder.withTimeZone(TimeZone(identifier: "Europe/Moscow")!) {
+            print(DateBuilder.calendar.timeZone)
+            let _tomorrowMorning = Tomorrow().at(hour: 9, minute: 00).date()
+            print(_tomorrowMorning)
+            XCTAssertNotEqual(tomorrowMorning.timeIntervalSince1970, _tomorrowMorning.timeIntervalSince1970)
+        }
+        let againTomorrowMorning = Tomorrow().at(hour: 9, minute: 00).date()
+        print(againTomorrowMorning)
+        XCTAssertEqual(tomorrowMorning, againTomorrowMorning)
+        DateBuilder.calendar = .current
+    }
+    
+    func testWithLocale() {
+        var current = Calendar.current
+        current.locale = Locale(identifier: "en_US")
+        DateBuilder.calendar = current
+        let startOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
+        print(startOfNextWeek)
+        DateBuilder.withLocale(Locale(identifier: "ru_RU")) {
+            let _startOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
+            print(_startOfNextWeek)
+            XCTAssertNotEqual(startOfNextWeek, _startOfNextWeek)
+        }
+        let againStartOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
+        print(againStartOfNextWeek)
+        XCTAssertEqual(startOfNextWeek, againStartOfNextWeek)
+        DateBuilder.calendar = .current
+    }
+    
     static var allTests = [
         ("testExample", testExample),
     ]
@@ -86,7 +136,7 @@ DateBuilder.withCalendar(customCalendar) {
     ThisWeek().firstDay.dateComponents()
 }
     
-let tomorrowMorning = DateBuilder.withTimeZone(TimeZone(identifier: "America/Cancun")) {
+let tomorrowMorning = DateBuilder.withTimeZone(TimeZone(identifier: "America/Cancun")!) {
     return Tomorrow().at(hour: 9, minute: 15).date()
 }
     
