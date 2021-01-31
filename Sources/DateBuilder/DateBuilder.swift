@@ -11,24 +11,33 @@ public enum DateBuilder {
         }
     }
     
-    public static func withCalendar(_ calendar: Calendar, perform: () -> ()) {
+    public static func withCalendar<T>(_ calendar: Calendar, _ perform: () -> T) -> T {
         let backup = _calendar
         _calendar = { calendar }
-        perform()
+        let returnValue = perform()
         _calendar = backup
+        return returnValue
     }
     
-    public static func withTimezone(_ timeZone: TimeZone, perform: () -> ()) {
+    public static func withTimeZone<T>(_ timeZone: TimeZone?, _ perform: () -> T) -> T {
         var current = calendar
-        current.timeZone = timeZone
-        withCalendar(current, perform: perform)
+        if let timeZone = timeZone {
+            calendar.timeZone = timeZone
+        }
+        return withCalendar(current, perform)
+    }
+    
+    public static func withLocale<T>(_ locale: Locale, _ perform: () -> T) -> T {
+        var current = calendar
+        current.locale = locale
+        return withCalendar(current, perform)
     }
 }
 
 public struct TimeOfDay: Codable {
     public var hour: Int
     public var minute: Int
-    public var second: Int
+    public var second: Int = 0
     
     public static func time(hour: Int, minute: Int, second: Int = 0) -> TimeOfDay {
         return TimeOfDay(hour: hour, minute: minute, second: second)
@@ -601,10 +610,6 @@ extension DateBuilder {
             // otherwise the end of the interval will be midnight of the first day of next month
             interval.end.addTimeInterval(-5)
             return Month.monthOf(interval.end)
-        }
-        
-        public func month(number: Int) -> Month {
-            return firstMonth.addingMonths(number - 1)
         }
         
         public var allMonths: [Month] {

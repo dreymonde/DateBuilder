@@ -4,14 +4,18 @@
 
 > **[Nice Photon](https://nicephoton.com) is available for hire!** Talk to us if you have any iOS app development needs. We have 10+ years of experience making iOS apps for top Silicon Valley companies. Reach out at [starback@nicephoton.com](mailto:starback@nicephoton.com)
 
-**DateBuilder** allows you to create `Date` and `DateComponents` instances with ease in a visual and declarative manner. With **DateBuilder**, it's very trivial to express dates from as simple as "tomorrow at 9pm" to "first fridays at 10:15am for the next 24 months".
+**DateBuilder** allows you to create `Date` and `DateComponents` instances with ease in a visual and declarative manner. With **DateBuilder**, it's very trivial to define dates from as simple as *"tomorrow at 9pm"* or as complex as *"first fridays for the next 24 months, at random times between 3pm and 7pm"*.
 
 Built at **[Nice Photon](https://nicephoton.com)**.  
 Maintainer: [@dreymonde](https://github.com/dreymonde)
 
+As of now, **DateBuilder** is in beta. Some APIs might be changed between releases.
+
 ## Usage
 
 ```swift
+import DateBuilder
+
 Today()
     .at(hour: 20, minute: 15)
     .dateComponents() // year: 2021, month: 1, day: 31, hour: 20, minute: 15
@@ -58,7 +62,184 @@ ExactYear(year: 2020)
 
 ## Guide
 
-> Detailed guide coming soon!
+### Anatomy of a date builder
+
+Every **DateBuilder** expression ends on a specific _day_ (or a set of days if you use functions like `EveryDay`/`EveryMonth`/etc.). First you specify your expression down to a day, and then define the time of day by calling `at(hour:minute:)` function. For example:
+
+```swift
+NextWeek()
+    .firstDay
+    .at(hour: 10, minute: 15)
+```
+
+Once you have your `at` expression, your date is now fully resolved. You can get a ready-to-use `Date` or `DateComponents` instance by calling `.date()` or `.dateComponents()`.
+
+Slightly more complicated example would be:
+
+```swift
+let dateComponents = NextYear()
+    .firstMonth.addingMonths(3)
+    .first(.thursday)
+    .at(hour: 21, minute: 00)
+    .dateComponents()
+```
+
+So we start on the scale of years, then we notch it down to the scale of months, and then we finally get the specific day, which in this case will be the first thursday of a 4th month of the next year. After that, we finalize our query by using the `at` function.
+
+### Available functions
+
+#### Day
+
+```swift
+// top-level
+Today()
+Tomorrow()
+DayOf(account.createdAt)
+ExactDay(year: 2021, month: 1, day: 26)
+AddingDays(15, to: .today)
+AddingDays(15, to: .dayOf(account.createdAt))
+EveryDay(forDays: 100, starting: .tomorrow)
+EveryDay(forDays: 100, starting: .dayOf(account.createdAt))
+
+// instance
+Today()
+    .addingDays(10)
+```
+
+#### Week
+
+**NOTE:** the start and end of the week is determined by the currently set `Calendar` and its `Locale`. To learn how to customize the calendar object used for **DateBuilder** queries, see *"Customizing the Calendar / Locale / Timezone"* section below
+
+```swift
+// top-level
+ThisWeek()
+NextWeek()
+WeekOf(account.createdAt)
+WeekOf(Today()) // use any `DateBuilder.Day` instance here
+AddingWeeks(5, to: .thisWeek)
+EveryWeek(forWeeks: 10, starting: .nextWeek)
+
+// instance
+ThisWeek()
+--->.addingWeeks(10) // Week
+--->.firstDay // Day
+--->.lastDay // Day
+--->.allDays // [Day]
+--->.weekday(.thursday) // Day
+--->.weekendStartDay // Day
+--->.weekendEndDay // Day
+```
+
+#### Month
+
+```swift
+// top-level
+ThisMonth()
+NextMonth()
+MonthOf(account.createdAt)
+MonthOf(Today()) // use any `DateBuilder.Day` instance here
+ExactMonth(year: 2021, month: 03)
+AddingMonths(3, to: .thisMonth)
+EveryMonth(forMonths: 5, starting: .monthOf(account.createdAt))
+
+// instance
+ThisMonth()
+--->.addingMonths(5) // Month
+--->.firstDay // Day
+--->.lastDay // Day
+--->.allDays // [Day]
+--->.first(.saturday) // Day
+--->.weekday(.third, .friday) // Day
+```
+
+#### Year
+
+```swift
+// top-level
+ThisYear()
+NextYear()
+YearOf(account.createdAt)
+YearOf(Tomorrow()) // use any `DateBuilder.Day` instance here
+YearOf(NextMonth()) // use any `DateBuilder.Month` instance here
+ExactYear(year: 2022)
+AddingYears(1, to: ThisYear())
+EveryYear(forYears: 100, starting: .thisYear)
+
+// instance
+ThisYear()
+--->.addingYears(1) // Year
+--->.firstMonth // Month
+--->.lastMonth // Month
+--->.allMonths // [Month]
+```
+
+#### Resolving the date
+
+```swift
+Today()
+--->.at(hour: 10, minute: 15)
+--->.at(hour: 19, minute: 30, second: 30)
+--->.at(TimeOfDay(hour: 10, minute: 30, second: 0)) // equivalent to:
+--->.at(.time(hour: 10, minute: 30))
+--->.at(.randomTime(from: .time(hour: 10, minute: 15), to: .time(hour: 15, minute: 30)))
+```
+
+```swift
+Today()
+    .at(hour: 9, minute: 15)
+    .date() // Date
+    
+// or
+
+Today()
+    .at(hour: 9, minute: 15)
+    .dateComponents() // DateComponents
+```
+
+You can also get the `DateComponents` (but not `Date`) instance by calling `dateComponents()` on an instance of `DateBuilder.Day`, without using `at`:
+
+```swift
+NextMonth()
+    .firstDay
+    .dateComponents() // year: 2021, month: 2, day: 1
+```
+
+### Customizing the Calendar / Locale / Timezone
+
+By default, **DateBuilder** uses `Calendar.current` for all calculations. If you need to customize it, you can either change it globally:
+
+```swift
+var customCalendar = DateBuilder.calendar
+customCalendar.firstWeekday = 6
+DateBuilder.calendar = customCalendar
+```
+
+Or temporarily, using the `DateBuilder.withCalendar` function:
+
+```swift
+DateBuilder.withCalendar(customCalendar) {
+    ThisWeek().firstDay.dateComponents()
+}
+```
+
+**DateBuilder** will return to its global `Calendar` instance after evaluating the expression.
+
+In a similar manner, you can also use `DateBuilder.withTimeZone` and `DateBuilder.withLocale` functions:
+
+```swift
+DateBuilder.withTimeZone(TimeZone(identifier: "America/Cancun")) {
+    Tomorrow().at(hour: 9, minute: 15).date()
+}
+
+let nextFriday = DateBuilder.withLocale(Locale(identifier: "he_IL")) {
+    NextWeek()
+        .weekendStartDay
+        .at(hour: 7, minute: 00)
+        .date() // next friday!
+}
+```
+
+All of these functions support returning the result of the closure (see above).
 
 ## Installation
 
