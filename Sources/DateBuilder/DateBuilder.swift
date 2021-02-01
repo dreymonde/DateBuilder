@@ -7,7 +7,11 @@ public enum DateBuilder {
             return _calendar()
         }
         set {
-            _calendar = { newValue }
+            if newValue == Calendar.current {
+                _calendar = { Calendar.current }
+            } else {
+                _calendar = { newValue }
+            }
         }
     }
     

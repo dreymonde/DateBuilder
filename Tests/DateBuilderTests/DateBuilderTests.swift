@@ -11,6 +11,88 @@ final class DateBuilderTests: XCTestCase {
         XCTAssertEqual("Hello, World!", "Hello, World!")
     }
     
+    override func tearDown() {
+        super.tearDown()
+        DateBuilder.calendar = .current
+    }
+    
+    func testToday() {
+        let dc = Today()
+            .at(hour: 10, minute: 15)
+            .dateComponents()
+        let st = DateBuilder.Day.today.at(.time(hour: 10, minute: 15)).dateComponents()
+        
+        let actual = Date()._makeComponents()
+        
+        for today in [dc, st] {
+            XCTAssertEqual(today.day, actual.day)
+            XCTAssertEqual(today.month, actual.month)
+            XCTAssertEqual(today.year, actual.year)
+            XCTAssertEqual(today.hour, 10)
+            XCTAssertEqual(today.minute, 15)
+            XCTAssertEqual(today.second, 0)
+        }
+    }
+    
+    func testTomorrow() {
+        let dc = Tomorrow()
+            .at(hour: 14, minute: 30, second: 30)
+            .dateComponents()
+        let st = DateBuilder.Day.tomorrow.at(.time(hour: 14, minute: 30, second: 30)).dateComponents()
+        
+        let actual = Calendar.current.date(byAdding: .day, value: 1, to: Date())!._makeComponents()
+        
+        for tomorrow in [dc, st] {
+            XCTAssertEqual(tomorrow.day, actual.day)
+            XCTAssertEqual(tomorrow.month, actual.month)
+            XCTAssertEqual(tomorrow.year, actual.year)
+            XCTAssertEqual(tomorrow.hour, 14)
+            XCTAssertEqual(tomorrow.minute, 30)
+            XCTAssertEqual(tomorrow.second, 30)
+        }
+    }
+    
+    func testDayOf() {
+        let randomDate = Date().addingTimeInterval(.random(in: 1 ... 5000) * 360 * 600)
+        let dc = DayOf(randomDate).at(hour: 18, minute: 11).dateComponents()
+        let st = DateBuilder.Day.dayOf(randomDate).at(hour: 18, minute: 11, second: 00).dateComponents()
+        
+        let actual = randomDate._makeComponents()
+        
+        for gen in [dc, st] {
+            XCTAssertEqual(gen.day, actual.day)
+            XCTAssertEqual(gen.month, actual.month)
+            XCTAssertEqual(gen.year, actual.year)
+            XCTAssertEqual(gen.hour, 18)
+            XCTAssertEqual(gen.minute, 11)
+            XCTAssertEqual(gen.second, 00)
+        }
+    }
+    
+    func testExactDay() {
+        let dc = ExactDay(year: 2019, month: 10, day: 17).dateComponents()
+        for gen in [dc] {
+            XCTAssertEqual(gen.day, 17)
+            XCTAssertEqual(gen.month, 10)
+            XCTAssertEqual(gen.year, 2019)
+        }
+    }
+    
+    func testChangingCalendar() {
+        var modified = Calendar.current
+        let startOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
+        print(startOfNextWeek)
+        modified.firstWeekday = 4
+        DateBuilder.calendar = modified
+        let _startOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
+        print(_startOfNextWeek)
+        XCTAssertNotEqual(startOfNextWeek, _startOfNextWeek)
+        DateBuilder.calendar = .current
+        let againStartOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
+        print(againStartOfNextWeek)
+        XCTAssertEqual(startOfNextWeek, againStartOfNextWeek)
+    }
+    
     func testWithCalendar() {
         var current = Calendar.current
         let startOfNextWeek = NextWeek().firstDay.at(hour: 10, minute: 15).date()
@@ -64,6 +146,20 @@ final class DateBuilderTests: XCTestCase {
     static var allTests = [
         ("testExample", testExample),
     ]
+}
+
+extension Date {
+    func _makeComponents() -> DateComponents {
+        return Calendar.current.dateComponents([.era, .year, .month, .day, .hour, .minute, .second, .weekday, .weekOfYear, .yearForWeekOfYear], from: self)
+    }
+}
+
+extension DateComponents {
+    func _makeDate() -> Date {
+        var copy = self
+        copy.calendar = .current
+        return copy.date!
+    }
 }
 
 struct Account {
