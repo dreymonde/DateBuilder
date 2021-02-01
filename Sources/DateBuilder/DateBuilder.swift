@@ -101,6 +101,28 @@ extension DateBuilder {
             return added.map(ResolvedDate.exact)
         }
         
+        public func addingMinutes(_ minutes: Int) -> ResolvedDate {
+            let components = DateComponents(minute: minutes)
+            if let date = adding(dateComponents: components) {
+                return date
+            } else {
+                print("UNEXPECTED - INVALID COMPONENTS: \(components)")
+                assertionFailure("UNEXPECTED - INVALID COMPONENTS: \(components)")
+                return .exact(.distantPast)
+            }
+        }
+        
+        public func addingHours(_ hours: Int) -> ResolvedDate {
+            let components = DateComponents(hour: hours)
+            if let date = adding(dateComponents: components) {
+                return date
+            } else {
+                print("UNEXPECTED - INVALID COMPONENTS: \(components)")
+                assertionFailure("UNEXPECTED - INVALID COMPONENTS: \(components)")
+                return .exact(.distantPast)
+            }
+        }
+        
         public func addingDays(_ days: Int) -> ResolvedDate {
             let components = DateComponents(day: days)
             if let date = adding(dateComponents: components) {
