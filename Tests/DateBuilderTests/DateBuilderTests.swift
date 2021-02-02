@@ -296,6 +296,11 @@ ExactYear(year: 2020)
     .lastDay
     .dateComponents()
     
+EveryMonth(forMonths: 12, starting: .thisMonth)
+    .first(.friday)
+    .at(hour: 20, minute: 15)
+    .dates()
+    
 let dates = EveryMonth(forMonths: 12, starting: .thisMonth)
     .firstDay.addingDays(9)
     .at(hour: 20, minute: 00)

@@ -11,7 +11,7 @@ Maintainer: [@dreymonde](https://github.com/dreymonde)
 
 As of now, **DateBuilder** is in beta. Some APIs might be changed between releases.
 
-**DateBuilder** is a part of the upcoming framework that radically simplifies local notifications. Follow our developer [@olegdreyman](https://twitter.com/olegdreyman) on Twitter to be first to know when it's out.
+**DateBuilder** is a part of an upcoming framework that will radically simplify local notifications. Follow our developer [@olegdreyman](https://twitter.com/olegdreyman) on Twitter for updates.
 
 ## Usage
 
