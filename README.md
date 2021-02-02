@@ -11,6 +11,8 @@ Maintainer: [@dreymonde](https://github.com/dreymonde)
 
 As of now, **DateBuilder** is in beta. Some APIs might be changed between releases.
 
+**DateBuilder** is a part of the upcoming framework that radically simplifies local notifications. Follow our developer [@olegdreyman](https://twitter.com/olegdreyman) on Twitter to be first to know when it's out.
+
 ## Usage
 
 ```swift
@@ -266,3 +268,16 @@ All of these functions support returning the result of the closure (see above).
 ### Swift Package Manager
 1. Click File &rarr; Swift Packages &rarr; Add Package Dependency.
 2. Enter `http://github.com/nicephoton/DateBuilder.git`.
+
+## Acknowledgments
+
+Built at **[Nice Photon](https://nicephoton.com)**
+
+Special thanks to:
+
+ - [@mattt](https://github.com/mattt) for his wonderful article: [Date​Components - NSHipster](https://nshipster.com/datecomponents/)
+
+Related materials:
+
+ - **[Time](https://github.com/dreymonde/Time)** by [@dreymonde](https://github.com/dreymonde) - Type-safe time calculations in Swift, powered by generics
+ - **[Time](https://github.com/davedelong/Time)** by [@davedelong](https://github.com/dreymonde) - Building a better date/time library for Swift
