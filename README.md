@@ -105,7 +105,7 @@ EveryDay(forDays: 100, starting: .dayOf(account.createdAt))
 
 // instance
 Today()
-    .addingDays(10)
+--->.addingDays(10)
 ```
 
 #### Week
@@ -204,6 +204,25 @@ You can also get the `DateComponents` (but not `Date`) instance by calling `date
 NextMonth()
     .firstDay
     .dateComponents() // year: 2021, month: 2, day: 1
+```
+
+#### Using `ExactlyAt` function
+
+`ExactlyAt` creates a resolved date from the existing `Date` instance. You can then use it to perform easy date calculations (functions `addingMinutes`/`addingHours` etc.) and easily get `Date` or `DateComponents` instances.
+
+```swift
+ExactlyAt(account.createdAt)
+--->.addingMinutes(1)
+--->.addingHours(5)
+--->.addingDays(20)
+--->.addingMonths(3)
+--->.addingWeeks(14)
+--->.addingYears(1)
+
+// usge:
+ExactlyAt(account.createdAt)
+    .addingMinutes(15)
+    .dateComponents() // DateComponents
 ```
 
 ### Using `Every` functions

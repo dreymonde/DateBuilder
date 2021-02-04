@@ -169,6 +169,11 @@ struct Account {
 let account = Account()
 
 func readme() {
+    
+ExactlyAt(account.createdAt)
+    .addingMinutes(1)
+    .dateComponents()
+    
     Today()
         .addingDays(10)
     Tomorrow()
@@ -294,6 +299,11 @@ ExactDay(year: 2020, month: 10, day: 5)
 ExactYear(year: 2020)
     .lastMonth
     .lastDay
+    .dateComponents()
+    
+EveryWeek(forWeeks: 50, starting: .thisWeek)
+    .firstDay
+    .at(hour: 10, minute: 00)
     .dateComponents()
     
 EveryMonth(forMonths: 12, starting: .thisMonth)
