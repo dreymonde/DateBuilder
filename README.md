@@ -212,6 +212,7 @@ NextMonth()
 
 ```swift
 ExactlyAt(account.createdAt)
+--->.addingSeconds(30)
 --->.addingMinutes(1)
 --->.addingHours(5)
 --->.addingDays(20)
