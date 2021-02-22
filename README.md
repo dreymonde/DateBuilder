@@ -2,7 +2,7 @@
 
 <img src="_Media/icon.png" width="70">
 
-> **[Nice Photon](https://nicephoton.com) is available for hire!** Talk to us if you have any iOS app development needs. We have 10+ years of experience making iOS apps for top Silicon Valley companies. Reach out at [starback@nicephoton.com](mailto:starback@nicephoton.com)
+> **[Nice Photon](https://nicephoton.com) is available for hire!** Talk to us if you have any iOS app development needs. We have 10+ years of experience making iOS apps for top Silicon Valley companies. Reach out at [hi@nicephoton.com](mailto:hi@nicephoton.com)
 
 **DateBuilder** allows you to create `Date` and `DateComponents` instances with ease in a visual and declarative manner. With **DateBuilder**, it's very trivial to define dates from as simple as *"tomorrow at 9pm"* or as complex as *"first fridays for the next 24 months, at random times between 3pm and 7pm"*.
 
