@@ -294,14 +294,37 @@ public func After(dayOf date: Date, days: Int, at timeOfDay: TimeOfDay) -> DateB
     return AddingDays(days, to: .dayOf(date)).at(timeOfDay)
 }
 
-public struct EveryDayDistribution {
-    public let distributeDays: (_ count: Int) -> [Int]
+public struct DelayDistribution {
+    public init(delayForNumber: @escaping (_ number: Int, _ totalCount: Int) -> Int) {
+        self.delayForNumber = delayForNumber
+    }
     
-    public static let normal = EveryDayDistribution(distributeDays: { Array(0 ..< $0) })
+    public let delayForNumber: (_ number: Int, _ totalCount: Int) -> Int
+    
+    public static let normal = DelayDistribution(delayForNumber: { number, _ in number })
+    
+    public static let optimized = DelayDistribution { number, totalCount in
+        let breakpoint = totalCount / 2
+        if number <= breakpoint {
+            return number
+        } else {
+            let shift = number - breakpoint
+            let exponent = shift * shift
+            return number + exponent
+        }
+    }
+    
+    public func generate<Unit>(count: Int, start: Unit, addDelay: (Unit, Int) -> Unit) -> [Unit] {
+        precondition(count >= 0)
+        return (0 ... count)
+            .lazy
+            .map({ self.delayForNumber($0, Int(count)) })
+            .map({ addDelay(start, $0) })
+    }
 }
 
-public func EveryDay(forDays days: Int, starting day: DateBuilder.Day, distribution: EveryDayDistribution = .normal) -> [DateBuilder.Day] {
-    return distribution.distributeDays(days).map({ day.addingDays($0) })
+public func EveryDay(forDays nextDays: Int, starting startDay: DateBuilder.Day, distribution: DelayDistribution = .normal) -> [DateBuilder.Day] {
+    return distribution.generate(count: nextDays, start: startDay, addDelay: { $0.addingDays($1) })
 }
 
 public func EveryDay(starting day: DateBuilder.Day, forDays days: Int, at timeOfDay: @autoclosure () -> TimeOfDay) -> [DateBuilder.ResolvedDate] {
@@ -460,9 +483,8 @@ public func AddingWeeks(_ weeks: Int, to week: DateBuilder.Week) -> DateBuilder.
     return week.addingWeeks(weeks)
 }
 
-public func EveryWeek(forWeeks nextWeeks: Int, starting startWeek: DateBuilder.Week) -> [DateBuilder.Week] {
-    let array = (0 ..< nextWeeks).map({ startWeek.addingWeeks($0) })
-    return array
+public func EveryWeek(forWeeks nextWeeks: Int, starting startWeek: DateBuilder.Week, distribution: DelayDistribution = .normal) -> [DateBuilder.Week] {
+    return distribution.generate(count: nextWeeks, start: startWeek, addDelay: { $0.addingWeeks($1) })
 }
 
 extension DateBuilder {
@@ -597,9 +619,8 @@ public func AddingMonths(_ months: Int, to month: DateBuilder.Month) -> DateBuil
     return month.addingMonths(months)
 }
 
-public func EveryMonth(forMonths nextMonths: Int, starting startMonth: DateBuilder.Month) -> [DateBuilder.Month] {
-    let array = (0 ..< nextMonths).map({ startMonth.addingMonths($0) })
-    return array
+public func EveryMonth(forMonths nextMonths: Int, starting startMonth: DateBuilder.Month, distribution: DelayDistribution = .normal) -> [DateBuilder.Month] {
+    return distribution.generate(count: nextMonths, start: startMonth, addDelay: { $0.addingMonths($1) })
 }
 
 extension DateBuilder {
@@ -706,9 +727,8 @@ public func AddingYears(_ years: Int, to year: DateBuilder.Year) -> DateBuilder.
     return year.addingYears(years)
 }
 
-public func EveryYear(forYears nextYears: Int, starting startYear: DateBuilder.Year) -> [DateBuilder.Year] {
-    let array = (0 ..< nextYears).map({ startYear.addingYears($0) })
-    return array
+public func EveryYear(forYears nextYears: Int, starting startYear: DateBuilder.Year, distribution: DelayDistribution = .normal) -> [DateBuilder.Year] {
+    return distribution.generate(count: nextYears, start: startYear, addDelay: { $0.addingYears($1) })
 }
 
 public func ExactlyAt(_ date: Date) -> DateBuilder.ResolvedDate {

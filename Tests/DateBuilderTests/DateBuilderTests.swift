@@ -8,7 +8,12 @@ final class DateBuilderTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
         twitter()
-        XCTAssertEqual("Hello, World!", "Hello, World!")
+        
+        let normalDelays = DelayDistribution.normal.generate(count: 100, start: 0, addDelay: { $0 + $1 })
+        print("DELAYS", normalDelays)
+        
+        let optimisedDelays = DelayDistribution.optimized.generate(count: 100, start: 0, addDelay: { $0 + $1 })
+        print("DELAYS", optimisedDelays)
     }
     
     override func tearDown() {
