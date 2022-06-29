@@ -8,7 +8,7 @@ Maintainer: [@dreymonde](https://github.com/dreymonde)
 
 As of now, **DateBuilder** is in beta. Some APIs might be changed between releases.
 
-**DateBuilder** is a stand-alone part of **[NiceNotifications](https://github.com/dreymonde/NiceNotifications)**, a Nice Photon framework that radically simplifies local notifications, from content to permissions.
+**DateBuilder** is a stand-alone part of **[NiceNotifications](https://github.com/dreymonde/NiceNotifications)**, a framework that radically simplifies local notifications, from content to permissions.
 
 ## Usage
 
