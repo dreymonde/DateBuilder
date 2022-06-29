@@ -2,16 +2,13 @@
 
 <img src="_Media/icon.png" width="70">
 
-> **[Nice Photon](https://nicephoton.com) is available for hire!** Talk to us if you have any iOS app development needs. We have 10+ years of experience making iOS apps for top Silicon Valley companies. Reach out at [hi@nicephoton.com](mailto:hi@nicephoton.com)
-
 **DateBuilder** allows you to create `Date` and `DateComponents` instances with ease in a visual and declarative manner. With **DateBuilder**, it's very trivial to define dates from as simple as *"tomorrow at 9pm"* or as complex as *"first fridays for the next 24 months, at random times between 3pm and 7pm"*.
 
-Built at **[Nice Photon](https://nicephoton.com)**.  
 Maintainer: [@dreymonde](https://github.com/dreymonde)
 
 As of now, **DateBuilder** is in beta. Some APIs might be changed between releases.
 
-**DateBuilder** is a stand-alone part of **[NiceNotifications](https://github.com/nicephoton/NiceNotifications)**, a Nice Photon framework that radically simplifies local notifications, from content to permissions.
+**DateBuilder** is a stand-alone part of **[NiceNotifications](https://github.com/dreymonde/NiceNotifications)**, a Nice Photon framework that radically simplifies local notifications, from content to permissions.
 
 ## Usage
 
@@ -290,8 +287,6 @@ All of these functions support returning the result of the closure (see above).
 2. Enter `http://github.com/nicephoton/DateBuilder.git`.
 
 ## Acknowledgments
-
-Built at **[Nice Photon](https://nicephoton.com)**
 
 Special thanks to:
 
