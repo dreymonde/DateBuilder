@@ -316,7 +316,7 @@ public struct DelayDistribution {
     
     public func generate<Unit>(count: Int, start: Unit, addDelay: (Unit, Int) -> Unit) -> [Unit] {
         precondition(count >= 0)
-        return (0 ... count)
+        return (0 ..< count)
             .lazy
             .map({ self.delayForNumber($0, Int(count)) })
             .map({ addDelay(start, $0) })
