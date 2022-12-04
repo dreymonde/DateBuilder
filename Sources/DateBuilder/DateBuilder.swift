@@ -36,10 +36,16 @@ public enum DateBuilder {
     }
 }
 
-public struct TimeOfDay: Codable {
+public struct TimeOfDay: Codable, Hashable, Comparable {
     public var hour: Int
     public var minute: Int
     public var second: Int = 0
+    
+    public init(hour: Int, minute: Int, second: Int = 0) {
+        self.hour = hour
+        self.minute = minute
+        self.second = second
+    }
     
     public static func time(hour: Int, minute: Int, second: Int = 0) -> TimeOfDay {
         return TimeOfDay(hour: hour, minute: minute, second: second)
@@ -56,6 +62,18 @@ public struct TimeOfDay: Codable {
         let randomDate = lowerDate.addingTimeInterval(TimeInterval(randomTimeDiff))
         let timeOfDay = TimeOfDay(date: randomDate, calendar: calendar)
         return timeOfDay
+    }
+    
+    public static func < (lhs: TimeOfDay, rhs: TimeOfDay) -> Bool {
+        guard lhs.hour != rhs.hour else {
+            return lhs.hour < rhs.hour
+        }
+        
+        guard lhs.minute != rhs.minute else {
+            return lhs.minute < rhs.minute
+        }
+        
+        return lhs.second < rhs.second
     }
 }
 
