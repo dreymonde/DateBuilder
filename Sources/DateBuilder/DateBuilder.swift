@@ -65,11 +65,11 @@ public struct TimeOfDay: Codable, Hashable, Comparable {
     }
     
     public static func < (lhs: TimeOfDay, rhs: TimeOfDay) -> Bool {
-        guard lhs.hour != rhs.hour else {
+        guard lhs.hour == rhs.hour else {
             return lhs.hour < rhs.hour
         }
         
-        guard lhs.minute != rhs.minute else {
+        guard lhs.minute == rhs.minute else {
             return lhs.minute < rhs.minute
         }
         

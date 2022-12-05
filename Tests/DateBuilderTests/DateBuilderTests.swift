@@ -148,6 +148,15 @@ final class DateBuilderTests: XCTestCase {
         DateBuilder.calendar = .current
     }
     
+    func testTimeOfDayComparable() {
+        let timeOfDay = TimeOfDay(hour: 15, minute: 00)
+        let lower = TimeOfDay(hour: 8, minute: 00)
+        let upper = TimeOfDay(hour: 20, minute: 00)
+        
+        XCTAssertGreaterThan(timeOfDay, lower)
+        XCTAssertLessThan(timeOfDay, upper)
+    }
+    
     static var allTests = [
         ("testExample", testExample),
     ]
