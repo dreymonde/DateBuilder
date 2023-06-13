@@ -92,7 +92,7 @@ extension DateBuilder {
         public func dateComponents() -> DateComponents {
             switch self {
             case .exact(let date):
-                let components = DateBuilder.calendar.dateComponents([.era, .year, .month, .day, .hour, .minute, .second], from: date)
+                let components = DateBuilder.calendar.dateComponents([.era, .year, .month, .weekday, .day, .hour, .minute, .second], from: date)
                 return components
             case .components(let components):
                 return components
